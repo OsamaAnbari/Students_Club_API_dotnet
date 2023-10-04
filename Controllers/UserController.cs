@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
