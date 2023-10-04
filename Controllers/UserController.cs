@@ -39,7 +39,6 @@ namespace WebApplication1.Controllers
 
             return Ok(myuser);
         }
-
         
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -74,6 +73,7 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
 
+            newuser.Id = exisiting.Id;
             await userService.UpdateById(id, newuser);
 
             return Ok(newuser);

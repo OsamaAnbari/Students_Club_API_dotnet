@@ -19,15 +19,15 @@ namespace WebApplication1.Services
             return await users.Find(u =>  u.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task UpdateById(string id, User user)
-        {
-            await users.ReplaceOneAsync(u => u.Id == id, user);
-        }
-
         public async Task<User> Create(User user)
         {
             await users.InsertOneAsync(user);
             return user;
+        }
+
+        public async Task UpdateById(string id, User user)
+        {
+            await users.ReplaceOneAsync(u => u.Id == id, user);
         }
 
         public async Task DeleteById(string id)

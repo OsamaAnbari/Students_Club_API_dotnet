@@ -11,6 +11,7 @@ namespace WebApplication1.Models
         public string? Id { get; set;  }
 
         [BsonElement("name")]
+        [Required(ErrorMessage = "First name is required")]
         public string? Name { get; set; }
 
         [BsonElement("tc")]
