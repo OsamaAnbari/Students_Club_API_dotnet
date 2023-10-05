@@ -6,9 +6,12 @@ namespace WebApplication1.Services
 {
     public class AdminService
     {
-        static MongoClient client = new MongoClient("mongodb+srv://osama3nbri13:asdrasdr1@cluster0.j3gm3vp.mongodb.net/");
-        static IMongoDatabase database = client.GetDatabase("asptest");
-        IMongoCollection<Admin> admins = database.GetCollection<Admin>("admin");
+        IMongoCollection<Admin> admins;
+
+        public AdminService(IMongoCollection<Admin> admins)
+        {
+            this.admins = admins;
+        }
 
         public async Task<List<Admin>> GetAll()
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using WebApplication1.Models;
 using WebApplication1.Services;
 
@@ -9,7 +10,19 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private readonly AdminService userService = new AdminService();
+        public IConfiguration _configuration;
+        private readonly AdminService userService;
+
+        public AdminController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+
+            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+            IMongoCollection<Admin> users = database.GetCollection<Admin>(_configuration.GetValue<string>("ConnectionStrings:AdminCollection"));
+
+            userService = new AdminService(users);
+        }
 
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
