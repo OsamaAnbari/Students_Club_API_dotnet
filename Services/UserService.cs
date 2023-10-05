@@ -1,13 +1,18 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using WebApplication1.Models;
 
 namespace WebApplication1.Services
 {
     public class UserService
     {
-        static MongoClient client = new MongoClient("mongodb+srv://osama3nbri13:asdrasdr1@cluster0.j3gm3vp.mongodb.net/");
-        static IMongoDatabase database = client.GetDatabase("asptest");
-        IMongoCollection<User> users = database.GetCollection<User>("user");
+        IMongoCollection<User> users;
+
+        public UserService(IMongoCollection<User> users)
+        {
+            this.users = users;
+        }
 
         public async Task<List<User>> GetAllUsers()
         {

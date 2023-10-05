@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using WebApplication1.Models;
 using WebApplication1.Services;
 
@@ -10,7 +11,19 @@ namespace WebApplication1.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserService userService = new UserService();
+        public IConfiguration _configuration;
+        private readonly UserService userService;
+
+        public UserController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+
+            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+            IMongoCollection<User> users = database.GetCollection<User>(_configuration.GetValue<string>("ConnectionStrings:UserCollection"));
+            
+            userService = new UserService(users);
+        }
 
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
