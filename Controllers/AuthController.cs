@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WebApplication1.Models;
+using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
@@ -11,21 +14,35 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        [HttpPost("login")]
-        public IActionResult Login(LoginModel model)
-        {
-            // Authenticate user (replace this with your authentication logic)
-            // If authentication is successful, generate a JWT token
-            var token = GenerateJwtToken();
+        public IConfiguration _configuration;
+        private readonly UserService userService;
 
-            return Ok(new { token });
+        public AuthController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+
+            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+            IMongoCollection<User> users = database.GetCollection<User>(_configuration.GetValue<string>("ConnectionStrings:UserCollection"));
+
+            userService = new UserService(users);
         }
 
-        private string GenerateJwtToken()
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(Login model)
         {
-            // Generate JWT token (replace with your token generation logic)
-            // Use JwtSecurityToken and JwtSecurityTokenHandler
-            // You can set claims, expiration, and other properties of the token
+            bool auth = await userService.AuthUsename(model);
+
+            if (auth)
+            {
+                var token = GenerateJwtToken(model);
+                return Ok(new { token });
+            }
+            return BadRequest();
+        }
+
+        private string GenerateJwtToken(Login model)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes("7fb4895dcd29473f09bd3b9d1499246456dd1eda25daf3f66fd4c5bf990e257418e4d3");
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -33,6 +50,9 @@ namespace WebApplication1.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                 new Claim(ClaimTypes.Name, "username"),
+                new Claim(ClaimTypes.Role, "admin"),
+                new Claim("username", model.Username),
+                new Claim("password", model.Password)
                     // Add additional claims as needed
                 }),
                 Expires = DateTime.UtcNow.AddHours(1), // Token expiration time
@@ -41,11 +61,5 @@ namespace WebApplication1.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-    }
-
-    public class LoginModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }

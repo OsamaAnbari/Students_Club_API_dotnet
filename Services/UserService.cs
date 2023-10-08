@@ -39,5 +39,15 @@ namespace WebApplication1.Services
         {
             await users.DeleteManyAsync(u => u.Id == id);
         }
+
+        public async Task<bool> AuthUsename(Login model)
+        {
+            User user = await users.Find<User>(u => u.Tc == model.Username).FirstOrDefaultAsync();
+            if(user.Password == model.Password)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
