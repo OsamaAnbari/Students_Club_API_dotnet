@@ -8,7 +8,6 @@ using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -27,6 +26,7 @@ namespace WebApplication1.Controllers
             userService = new UserService(users);
         }
 
+        [Authorize(Roles ="admin")]
         [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -41,6 +41,7 @@ namespace WebApplication1.Controllers
             return Ok(myuser);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -54,7 +55,8 @@ namespace WebApplication1.Controllers
 
             return Ok(myuser);
         }
-        
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -71,6 +73,7 @@ namespace WebApplication1.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -94,6 +97,7 @@ namespace WebApplication1.Controllers
             return Ok(newuser);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -109,6 +113,34 @@ namespace WebApplication1.Controllers
             await userService.DeleteById(id);
 
             return Ok(myuser);
+        }
+
+        [Authorize(Roles = "user")]
+        [HttpGet("myinfos")]
+        public async Task<IActionResult> GetMyData()
+        {
+            var id = HttpContext.Items["userId"];
+            if (id != null)
+            {
+                User myuser = await userService.GetUserById($"{id}");
+                return Ok(myuser);
+            }
+
+            return Unauthorized("User ID not found.");
+        }
+
+        [Authorize(Roles = "user")]
+        [HttpPut("myinfos")]
+        public async Task<IActionResult> PutMyData(User newuser)
+        {
+            var id = HttpContext.Items["userId"];
+            if (id != null)
+            {
+                await userService.UpdateById($"{id}", newuser);
+                return Ok(newuser);
+            }
+
+            return Unauthorized("User ID not found.");
         }
     }
 }

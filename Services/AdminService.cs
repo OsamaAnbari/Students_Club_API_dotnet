@@ -38,5 +38,18 @@ namespace WebApplication1.Services
         {
             await admins.DeleteManyAsync(u => u.Id == id);
         }
+
+        public async Task<Admin> AuthUsename(Login model)
+        {
+            Admin admin = await admins.Find<Admin>(u => u.Tc == model.Username).FirstOrDefaultAsync();
+            if(admin != null)
+            {
+                if (admin.Password == model.Password)
+                {
+                    return admin;
+                }
+            }
+            return null;
+        }
     }
 }

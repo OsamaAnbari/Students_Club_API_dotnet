@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Options;
@@ -5,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WebApplication1;
+using WebApplication1.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,10 +60,22 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+/*builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = GoogleDefaults.AuthenticationScheme;
+})
+                    .AddGoogle(options =>
+                    {
+                        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.CallbackPath = "/api/login/google";
+
+                        options.ClientId = "186763096110-n53tnjdnusqq9eoe7ukcnnjmu4n02680.apps.googleusercontent.com";
+                        options.ClientSecret = "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";
+                    });
+
+builder.Services.AddAuthorization();*/
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -70,6 +85,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<GetId>();
 
 app.MapControllers();
 

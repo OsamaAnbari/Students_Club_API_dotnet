@@ -52,3 +52,5 @@ C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\Microsoft.IdentityModel.
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\System.Security.Permissions.dll
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\BCrypt.Net-Next.dll
