@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Driver;
 using WebApplication1.Models;
 
 namespace WebApplication1.Services
@@ -9,11 +10,19 @@ namespace WebApplication1.Services
         IMongoCollection<Admin> admins;
         IMongoCollection<Message> messages;
 
-        public MessageService(IMongoCollection<Admin> admins, IMongoCollection<User> users, IMongoCollection<Message> messages)
+        public MessageService(IConfiguration configuration)
         {
-            this.admins = admins;
-            this.users = users;
-            this.messages = messages;
+            MongoClient client = new MongoClient(configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+            messages = database.GetCollection<Message>(configuration.GetValue<string>("ConnectionStrings:MessageCollection"));
+            users = database.GetCollection<User>(configuration.GetValue<string>("ConnectionStrings:UserCollection"));
+            admins = database.GetCollection<Admin>(configuration.GetValue<string>("ConnectionStrings:AdminCollection"));
+        }
+
+        public async Task<Message> GetById(string? id)
+        {
+            Message message = await messages.Find(u => u.Id == id).FirstOrDefaultAsync();
+            return message;
         }
 
         public async Task<List<Message>> GetSentByUserId(string? userId)

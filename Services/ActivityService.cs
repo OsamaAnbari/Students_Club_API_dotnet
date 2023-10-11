@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using WebApplication1.Models;
 
@@ -9,10 +10,13 @@ namespace WebApplication1.Services
         IMongoCollection<Activity> activities;
         IMongoCollection<User> users;
 
-        public ActivityService(IMongoCollection<Activity> activities, IMongoCollection<User> users)
+        public ActivityService(IConfiguration configuration)
         {
-            this.activities = activities;
-            this.users = users;
+            MongoClient client = new MongoClient(configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+
+            users = database.GetCollection<User>(configuration.GetValue<string>("ConnectionStrings:UserCollection"));
+            activities = database.GetCollection<Activity>("activity");
         }
 
         public async Task<List<Activity>> GetAllActivities()

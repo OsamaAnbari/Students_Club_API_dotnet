@@ -13,10 +13,10 @@ namespace WebApplication1.Models
         public DateTime? Date { get; set; } = default(DateTime?);
 
         [BsonElement("subject")]
-        public string? Subject { get; set; }
+        public string? Subject { get; set; } = "";
 
         [BsonElement("content")]
-        public string? Content { get; set; }
+        public string? Content { get; set; } = "";
 
         [BsonElement("sender_id")]
         [BsonRepresentation(BsonType.ObjectId)]

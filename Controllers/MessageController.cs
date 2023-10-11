@@ -11,20 +11,11 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        public IConfiguration _configuration;
         private readonly MessageService messageService;
 
         public MessageController(IConfiguration configuration)
         {
-            _configuration = configuration;
-
-            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
-            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
-            IMongoCollection<Message> messages = database.GetCollection<Message>(_configuration.GetValue<string>("ConnectionStrings:MessageCollection"));
-            IMongoCollection<User> users = database.GetCollection<User>(_configuration.GetValue<string>("ConnectionStrings:UserCollection"));
-            IMongoCollection<Admin> admins = database.GetCollection<Admin>(_configuration.GetValue<string>("ConnectionStrings:AdminCollection"));
-
-            messageService = new MessageService(admins, users, messages);
+            messageService = new MessageService(configuration);
         }
 
         [Authorize(Roles = "admin")]
@@ -44,8 +35,7 @@ namespace WebApplication1.Controllers
         }
 
         [Authorize(Roles = "user")]
-        [Route("getreceived")]
-        [HttpGet()]
+        [HttpGet("getreceived")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetReceivedByUserId()
@@ -85,16 +75,28 @@ namespace WebApplication1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteById(string id)
         {
+            Message message = await messageService.GetById(id);
+            if (message == null)
+            {
+                return NotFound();
+            }
+
             await messageService.DeleteById(id);
             return Ok();
         }
 
         [Authorize(Roles = "user")]
-        [HttpDelete("{id}")]
+        [HttpDelete("deletefromuser{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteInUserById(string id)
         {
+            Message message = await messageService.GetById(id);
+            if (message == null)
+            {
+                return NotFound();
+            }
+
             await messageService.DeleteInUserById(id);
             return Ok();
         }

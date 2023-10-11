@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,6 +41,12 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+
+
+
+
+
+
 var key = Encoding.ASCII.GetBytes("7fb4895dcd29473f09bd3b9d1499246456dd1eda25daf3f66fd4c5bf990e257418e4d3");
 
 builder.Services.AddAuthentication(options =>
@@ -60,20 +67,30 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-/*builder.Services.AddAuthentication(options =>
+
+
+
+
+
+builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = GoogleDefaults.AuthenticationScheme;
+    //options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
-                    .AddGoogle(options =>
-                    {
-                        options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                        options.CallbackPath = "/api/login/google";
+    //.AddCookie()
+    .AddGoogle(options =>
+    {
+        options.ClientId = "186763096110-n53tnjdnusqq9eoe7ukcnnjmu4n02680.apps.googleusercontent.com";
+        options.ClientSecret = "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";
+        options.ClaimActions.MapJsonKey("role", "role", "role");
+    });
 
-                        options.ClientId = "186763096110-n53tnjdnusqq9eoe7ukcnnjmu4n02680.apps.googleusercontent.com";
-                        options.ClientSecret = "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";
-                    });
+// Add authorization policy for roles
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("admin", policy => policy.RequireRole("admin"));
+});
 
-builder.Services.AddAuthorization();*/
 
 var app = builder.Build();
 

@@ -11,24 +11,18 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class ActivityController : ControllerBase
     {
-        public IConfiguration _configuration;
         private readonly ActivityService activityService;
 
         public ActivityController(IConfiguration configuration)
         {
-            _configuration = configuration;
-
-            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
-            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
-            IMongoCollection<User> users = database.GetCollection<User>(_configuration.GetValue<string>("ConnectionStrings:UserCollection"));
-            IMongoCollection<Activity> activities = database.GetCollection<Activity>("activity");
-
-            activityService = new ActivityService(activities, users);
+            activityService = new ActivityService(configuration);
         }
 
         [Authorize(Roles = "admin,user")]
         [HttpGet("myactivities")]
-        public async Task<IActionResult> GetProtectedData()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetMyActivities()
         {
             var id = HttpContext.Items["userId"];
             if (id != null)
@@ -92,6 +86,12 @@ namespace WebApplication1.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(string id)
         {
+            Activity activity = await activityService.GetActivityById(id);
+            if (activity == null)
+            {
+                return NotFound();
+            }
+
             await activityService.DeleteById(id);
             return Ok();
         }

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using WebApplication1.Models;
 
@@ -8,9 +9,11 @@ namespace WebApplication1.Services
     {
         IMongoCollection<Admin> admins;
 
-        public AdminService(IMongoCollection<Admin> admins)
+        public AdminService(IConfiguration configuration)
         {
-            this.admins = admins;
+            MongoClient client = new MongoClient(configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+            admins = database.GetCollection<Admin>(configuration.GetValue<string>("ConnectionStrings:AdminCollection"));
         }
 
         public async Task<List<Admin>> GetAll()

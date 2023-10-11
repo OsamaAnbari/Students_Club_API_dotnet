@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using WebApplication1.Models;
@@ -10,18 +11,11 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        public IConfiguration _configuration;
         private readonly AdminService userService;
 
         public AdminController(IConfiguration configuration)
         {
-            _configuration = configuration;
-
-            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
-            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
-            IMongoCollection<Admin> users = database.GetCollection<Admin>(_configuration.GetValue<string>("ConnectionStrings:AdminCollection"));
-
-            userService = new AdminService(users);
+            userService = new AdminService(configuration);
         }
 
         [HttpGet()]
@@ -106,6 +100,13 @@ namespace WebApplication1.Controllers
             await userService.DeleteById(id);
 
             return Ok(myuser);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("protected")]
+        public IActionResult gg()
+        {
+            return Ok();
         }
     }
 }

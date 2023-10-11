@@ -12,18 +12,11 @@ namespace WebApplication1.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        public IConfiguration _configuration;
         private readonly UserService userService;
 
         public UserController(IConfiguration configuration)
         {
-            _configuration = configuration;
-
-            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
-            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
-            IMongoCollection<User> users = database.GetCollection<User>(_configuration.GetValue<string>("ConnectionStrings:UserCollection"));
-            
-            userService = new UserService(users);
+            userService = new UserService(configuration);
         }
 
         [Authorize(Roles ="admin")]

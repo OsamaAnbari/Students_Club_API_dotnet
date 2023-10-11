@@ -12,13 +12,13 @@ namespace WebApplication1.Models
 
         [BsonElement("name")]
         [Required(ErrorMessage = "First name is required")]
-        public string? Name { get; set; }
+        public string? Name { get; set; } = "";
 
         [BsonElement("surname")]
-        public string? Surname { get; set; }
+        public string? Surname { get; set; } = "";
 
         [BsonElement("tc")]
-        public string? Tc { get; set; }
+        public string? Tc { get; set; } = "";
 
         [BsonElement("password")]
         public string? Password { get; set; }

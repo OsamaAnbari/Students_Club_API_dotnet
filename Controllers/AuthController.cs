@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using WebApplication1.Models;
 using WebApplication1.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace WebApplication1.Controllers
 {
@@ -16,21 +17,13 @@ namespace WebApplication1.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public IConfiguration _configuration;
         private readonly UserService userService;
         private readonly AdminService adminService;
 
         public AuthController(IConfiguration configuration)
         {
-            _configuration = configuration;
-
-            MongoClient client = new MongoClient(_configuration.GetValue<string>("ConnectionStrings:MongoString"));
-            IMongoDatabase database = client.GetDatabase(_configuration.GetValue<string>("ConnectionStrings:MongoDB"));
-            IMongoCollection<User> users = database.GetCollection<User>(_configuration.GetValue<string>("ConnectionStrings:UserCollection"));
-            IMongoCollection<Admin> admins = database.GetCollection<Admin>(_configuration.GetValue<string>("ConnectionStrings:AdminCollection"));
-
-            userService = new UserService(users);
-            adminService = new AdminService(admins);
+            userService = new UserService(configuration);
+            adminService = new AdminService(configuration);
         }
 
         [HttpPost("admin")]
@@ -77,6 +70,32 @@ namespace WebApplication1.Controllers
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        [HttpGet("login-google")]
+        public IActionResult Login()
+        {
+            var redirectUrl = Url.Action(nameof(LoginCallback), "Login");
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = redirectUrl
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        [HttpGet("login-callback")]
+        public async Task<IActionResult> LoginCallback()
+        {
+            var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            if (authenticateResult?.Succeeded == true)
+            {
+                // Authentication successful, you can handle the user here.
+                // For demonstration, we're just redirecting to the home page.
+                return RedirectToAction("Index", "Home");
+            }
+
+            return BadRequest("Google authentication failed.");
         }
     }
 }

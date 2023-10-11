@@ -10,9 +10,12 @@ namespace WebApplication1.Services
     {
         IMongoCollection<User> users;
 
-        public UserService(IMongoCollection<User> users)
+        public UserService(IConfiguration configuration)
         {
-            this.users = users;
+
+            MongoClient client = new MongoClient(configuration.GetValue<string>("ConnectionStrings:MongoString"));
+            IMongoDatabase database = client.GetDatabase(configuration.GetValue<string>("ConnectionStrings:MongoDB"));
+            users = database.GetCollection<User>(configuration.GetValue<string>("ConnectionStrings:UserCollection"));
         }
 
         public async Task<List<User>> GetAllUsers()

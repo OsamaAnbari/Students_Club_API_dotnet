@@ -15,25 +15,25 @@ namespace WebApplication1.Models
 
         [BsonElement("name")]
         [Required(ErrorMessage = "First name is required")]
-        public string? Name { get; set; }
+        public string? Name { get; set; } = "";
 
         [BsonElement("surname")]
-        public string? Surname { get; set; }
+        public string? Surname { get; set; } = "";
 
         [BsonElement("tc")]
-        public string? Tc { get; set; }
+        public string? Tc { get; set; } = "";
 
         [BsonElement("department")]
-        public string? Department { get; set; }
+        public string? Department { get; set; } = "";
 
         [BsonElement("email")]
-        public string? Email { get; set; }
+        public string? Email { get; set; } = "";
 
         [BsonElement("image")]
-        public string? Image { get; set; }
+        public string? Image { get; set; } = "";
 
         [BsonElement("mobile")]
-        public string? Mobile { get; set; }
+        public string? Mobile { get; set; } = "";
 
         [BsonElement("password")]
         public string? Password { get; set; }
