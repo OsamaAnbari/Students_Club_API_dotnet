@@ -54,3 +54,8 @@ C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\System.IdentityModel.Tok
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\System.Security.Permissions.dll
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.Google.dll
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\BCrypt.Net-Next.dll
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\published\web.config
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\published\appsettings.Development.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\published\appsettings.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\published\WebApplication1.deps.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\published\WebApplication1.runtimeconfig.json

@@ -1,6 +1,11 @@
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\WebApplication1.exe
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\published\web.config
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\appsettings.Development.json
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\appsettings.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\published\appsettings.Development.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\published\appsettings.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\published\WebApplication1.deps.json
+C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\published\WebApplication1.runtimeconfig.json
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\WebApplication1.dll
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\WebApplication1.deps.json
 C:\Users\Osama\Desktop\WebApplication1\bin\Debug\net7.0\publish\WebApplication1.runtimeconfig.json
